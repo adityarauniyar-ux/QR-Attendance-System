@@ -18,12 +18,12 @@ workflows:
       - name: Set Android SDK location
         script: |
           echo "sdk.dir=$ANDROID_SDK_ROOT" > "$CM_BUILD_DIR/app/android/local.properties"
-          
+
       - name: Diagnose duplicate AndroidX dependency
         script: |
           cd app/android
+          chmod +x gradlew
           ./gradlew app:dependencyInsight --dependency versionedparcelable --configuration debugRuntimeClasspath
-
 
       - name: Build Android APK
         script: |
@@ -33,4 +33,3 @@ workflows:
 
     artifacts:
       - app/android/app/build/outputs/apk/**/*.apk
-
