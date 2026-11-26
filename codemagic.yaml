@@ -1,1 +1,30 @@
 
+workflows:
+  qr-attendance-android:
+    name: QR Attendance Android APK
+    max_build_duration: 120
+    instance_type: mac_mini_m2
+
+    environment:
+      java: 1.8
+      node: 10.15.3
+
+    scripts:
+      - name: Install React Native dependencies
+        script: |
+          cd app
+          npm ci
+
+      - name: Set Android SDK location
+        script: |
+          echo "sdk.dir=$ANDROID_SDK_ROOT" > "$CM_BUILD_DIR/app/android/local.properties"
+
+      - name: Build Android APK
+        script: |
+          cd app/android
+          chmod +x gradlew
+          ./gradlew assembleDebug
+
+    artifacts:
+      - app/android/app/build/outputs/apk/**/*.apk
+
