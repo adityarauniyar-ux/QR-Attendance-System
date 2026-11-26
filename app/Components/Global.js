@@ -1,1 +1,1 @@
-global.url= "http://sksqratt.com/app/"
+global.url = "https://qratt.page.gd/server/app/";
