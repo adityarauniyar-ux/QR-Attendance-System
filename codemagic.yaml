@@ -16,6 +16,14 @@ workflows:
           cd app
           npm ci
 
+      - name: Fix fsevents and install watchman
+        script: |
+          cd app
+          npm install --no-save fsevents@1.2.13 || true
+          node -e "require('fsevents'); console.log('fsevents OK')" || echo "fsevents still unavailable"
+          brew install watchman || true
+          watchman --version || echo "watchman not installed"
+
       - name: Convert node_modules to AndroidX (jetify)
         script: |
           cd app
@@ -30,7 +38,6 @@ workflows:
         script: |
           cd app/android
           chmod +x gradlew
-          export CI=true
           ./gradlew clean
           ./gradlew assembleDebug
 
