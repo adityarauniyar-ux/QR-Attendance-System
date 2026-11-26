@@ -2,11 +2,13 @@ workflows:
   qr-attendance-android:
     name: QR Attendance Android APK
     max_build_duration: 120
-    instance_type: linux_x2
+    instance_type: mac_mini_m2
 
     environment:
       java: 1.8
       node: 10.15.3
+      vars:
+        CI: "true"
 
     scripts:
       - name: Install React Native dependencies
@@ -28,6 +30,7 @@ workflows:
         script: |
           cd app/android
           chmod +x gradlew
+          export CI=true
           ./gradlew clean
           ./gradlew assembleDebug
 
