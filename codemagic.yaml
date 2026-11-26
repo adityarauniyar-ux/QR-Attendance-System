@@ -1,4 +1,3 @@
-
 workflows:
   qr-attendance-android:
     name: QR Attendance Android APK
@@ -15,20 +14,21 @@ workflows:
           cd app
           npm ci
 
+      - name: Convert node_modules to AndroidX (jetify)
+        script: |
+          cd app
+          npm install --no-save jetifier@1.6.8
+          npx jetify
+
       - name: Set Android SDK location
         script: |
           echo "sdk.dir=$ANDROID_SDK_ROOT" > "$CM_BUILD_DIR/app/android/local.properties"
-
-      - name: Diagnose duplicate AndroidX dependency
-        script: |
-          cd app/android
-          chmod +x gradlew
-          ./gradlew app:dependencyInsight --dependency versionedparcelable --configuration debugRuntimeClasspath
 
       - name: Build Android APK
         script: |
           cd app/android
           chmod +x gradlew
+          ./gradlew clean
           ./gradlew assembleDebug
 
     artifacts:
