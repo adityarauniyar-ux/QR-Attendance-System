@@ -44,31 +44,37 @@ export default class Login extends Component {
             </KeyboardAvoidingView>
         );
     }
-    
+
     _login = () => {
-        var url = global.url + 'applogin.php'
+        var url = global.url + 'applogin.php?i=1'
         var data = new FormData()
         data.append('username', this.state.username)
         data.append('password', this.state.password)
         this.loadingButton.showLoading(true);
         fetch(url, {
             method: 'POST',
-            body: data  
-        }).then(response => response.json())
-            .then((res) => {
+            body: data
+        }).then(response => response.text())
+            .then((text) => {
                 this.loadingButton.showLoading(false);
+                var res;
+                try {
+                    res = JSON.parse(text);
+                } catch (e) {
+                    alert("Server ne ye bheja:\n" + text.substring(0, 300));
+                    return;
+                }
                 if (res.status === 'Successfull') {
                     AsyncStorage.setItem('user', this.state.username);
                     AsyncStorage.setItem('pass', this.state.password);
                     AsyncStorage.setItem('uid', DeviceInfo.getUniqueID());
                     this.props.navigation.navigate('Profile');
-                }
-                else {
-                    this.loadingButton.showLoading(false);
+                } else {
                     alert("Please Check Your Username & Password");
                 }
             }).catch((error) => {
-               alert("Please Check Your Internet Connection");
+                this.loadingButton.showLoading(false);
+                alert("Network error: " + error.message);
             });
     }
 }
@@ -97,5 +103,5 @@ const styles = StyleSheet.create({
         padding: 16,
         marginBottom: 20,
     },
-   
+
 })
